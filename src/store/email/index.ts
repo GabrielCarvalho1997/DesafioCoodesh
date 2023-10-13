@@ -3,11 +3,26 @@ import { RootState } from '..';
 import axios from 'axios';
 
 export type EmailState = {
-    email: string;
+    id: string,
+    expiresAt: string,
+    addresses: [
+        {
+            id: string,
+            address: string
+        }
+    ]
+    
 }
 
 const initialState: EmailState = {
-    email: ''
+    id: '',
+    expiresAt: '',
+    addresses: [
+        {
+            id: '',
+            address: ''
+        }
+    ]
 }
 
 export const emailSlice = createSlice({
@@ -15,7 +30,9 @@ export const emailSlice = createSlice({
     initialState,
     reducers: {
         setEmail: (state, action) => {
-            state.email = action.payload;
+            state.id = action.payload.id;
+            state.expiresAt = action.payload.expiresAt;
+            state.addresses = action.payload.addresses;
         }
     }
 })
@@ -25,7 +42,7 @@ export const fetchEmail = createAsyncThunk("email/fetchEmail", async (_, { dispa
 
     const apiUrl = 'https://dropmail.me/api/graphql/MY_TOKEN';
 
-    const graphqlQuery = 'mutation {introduceSession {id, expiresAt, addresses{id, address}}}';
+    const query = 'mutation {introduceSession {id, expiresAt, addresses{id, address}}}';
 
     const axiosConfig = {
         headers: {
@@ -36,12 +53,40 @@ export const fetchEmail = createAsyncThunk("email/fetchEmail", async (_, { dispa
     try {
         const response = await axios.post(
             `${corsAnywhereUrl}/${apiUrl}`,
-            `query=${graphqlQuery}`,
+            `query=${query}`,
             axiosConfig
         );
-        console.log(response.data);
-        // Mude o tipo do parâmetro dispatch() para AsyncThunkAction
-        dispatch(emailActions.setEmail(response.data.data.introduceSession.addresses[0].address));
+        dispatch(emailActions.setEmail(response.data.data.introduceSession));
+    } catch (error) {
+        console.error("Erro ao chamar a API GraphQL:", error);
+    }
+});
+
+export const searchInbox = createAsyncThunk("email/searchInbox", async (id: string) => {
+    const corsAnywhereUrl = 'https://cors-anywhere.herokuapp.com'; // URL do CORS Anywhere
+
+    const apiUrl = 'https://dropmail.me/api/graphql/MY_TOKEN';
+
+    const query = `
+    query ($id: ID!) {
+      session(id:$id) {
+        mails {
+          rawSize
+          fromAddr
+          toAddr
+          downloadUrl
+          text
+          headerSubject
+        }
+      }
+    }`;
+
+    try {
+        const response = await axios.post(
+            `${corsAnywhereUrl}/${apiUrl}`,
+            { query, variables: { id } },
+        );
+       return response.data;
     } catch (error) {
         console.error("Erro ao chamar a API GraphQL:", error);
     }

@@ -4,53 +4,34 @@ import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchEmail, useEmailState } from '../../store/email';
 import { useEffect } from 'react';
-// import { useEffect, useState } from 'react';
-// import axios from 'axios';
 
 const EmailInput = () => {
   const email = useAppSelector(useEmailState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Chama getEmailTemporario assim que o componente for montado
-    dispatch(fetchEmail());
+    // Verifique se a última busca foi feita há mais de 10 minutos
+    const lastFetchTime = localStorage.getItem('lastFetchTime');
+    const currentTime = new Date().getTime();
+
+    if (!lastFetchTime || currentTime - Number(lastFetchTime) > 10 * 60 * 1000) {
+      // Se passaram mais de 10 minutos ou se nenhum lastFetchTime estiver definido, chame fetchEmail
+      dispatch(fetchEmail());
+      // Atualize o lastFetchTime no localStorage
+      localStorage.setItem('lastFetchTime', String(currentTime));
+    }
+    // Defina um intervalo para verificar e chamar fetchEmail a cada 10 minutos
+    const fetchEmailInterval = setInterval(() => {
+      dispatch(fetchEmail());
+      // Atualize o lastFetchTime no localStorage
+      localStorage.setItem('lastFetchTime', String(new Date().getTime()));
+    }, 10 * 60 * 1000); // 10 minutos
+
+    // Limpe o intervalo quando o componente for desmontado
+    return () => {
+      clearInterval(fetchEmailInterval);
+    };
   }, [dispatch]);
-
-  //   const variables = {
-  //     id: 'U2Vzc2lvbjrPjdcfGvBJFrM_RxXg7flX',
-  //   };
-
-  //   // Defina a consulta GraphQL e as variáveis como um objeto JavaScript
-  //   const graphqlQuery2 = `
-  //    query ($id: ID!) {
-  //        session(id:$id) {
-  //        mails {
-  //            rawSize
-  //            fromAddr
-  //            toAddr
-  //            downloadUrl
-  //            text
-  //            headerSubject
-  //        }
-  //        }
-  //    }
-  //    `;
-
-  //   useEffect(() => {
-
-  //     // Busca email recebidos
-  //     axios
-  //       .post(`${corsAnywhereUrl}/${apiUrl}`, {
-  //         query: graphqlQuery2,
-  //         variables,
-  //       })
-  //       .then(response => {
-  //         console.log(response.data);
-  //       })
-  //       .catch(error => {
-  //         console.error('Erro ao chamar a API GraphQL:', error);
-  //       });
-  //   }, []);
 
   const handleCopyClick = () => {
     const inputElement = document.getElementById('outlined-adornment-password') as HTMLInputElement;
@@ -62,13 +43,10 @@ const EmailInput = () => {
       navigator.clipboard
         .writeText(inputElement.value)
         .then(() => {
-          console.log('Texto copiado com sucesso!');
+          toast.success('Email copiado com sucesso!');
         })
         .catch(error => {
           console.error('Erro ao copiar texto:', error);
-        })
-        .finally(() => {
-          toast.success('Email copiado com sucesso!');
         });
 
       inputElement.blur();
@@ -93,7 +71,7 @@ const EmailInput = () => {
           id="outlined-adornment-password"
           sx={{ mt: 1 }}
           size="small"
-          value={email.email}
+          value={email.addresses[0].address}
           fullWidth
           readOnly
           endAdornment={
