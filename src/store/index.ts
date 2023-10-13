@@ -1,17 +1,17 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit'
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
-import configReducer from "./config";
 import {persistReducer, persistStore} from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import emailReducer from "./email";
 
-const configPersistConfig = {
-    key: 'config',
+
+const emailPersistConfig = {
+    key: 'email',
     storage: storage,
-    blacklist: ['auth']
 }
 
 const rootReducer = combineReducers({
-    config: persistReducer(configPersistConfig, configReducer),
+    email: persistReducer(emailPersistConfig, emailReducer),
 })
 
 
@@ -23,9 +23,7 @@ export const store = configureStore({
 
 export const persistor = persistStore(store)
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof rootReducer>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 export const useAppState: () => RootState = () => store.getState();

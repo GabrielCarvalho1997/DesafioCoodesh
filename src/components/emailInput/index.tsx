@@ -1,8 +1,57 @@
 import { Box, Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { fetchEmail, useEmailState } from '../../store/email';
+import { useEffect } from 'react';
+// import { useEffect, useState } from 'react';
+// import axios from 'axios';
 
 const EmailInput = () => {
+  const email = useAppSelector(useEmailState);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    // Chama getEmailTemporario assim que o componente for montado
+    dispatch(fetchEmail());
+  }, [dispatch]);
+
+  //   const variables = {
+  //     id: 'U2Vzc2lvbjrPjdcfGvBJFrM_RxXg7flX',
+  //   };
+
+  //   // Defina a consulta GraphQL e as variáveis como um objeto JavaScript
+  //   const graphqlQuery2 = `
+  //    query ($id: ID!) {
+  //        session(id:$id) {
+  //        mails {
+  //            rawSize
+  //            fromAddr
+  //            toAddr
+  //            downloadUrl
+  //            text
+  //            headerSubject
+  //        }
+  //        }
+  //    }
+  //    `;
+
+  //   useEffect(() => {
+
+  //     // Busca email recebidos
+  //     axios
+  //       .post(`${corsAnywhereUrl}/${apiUrl}`, {
+  //         query: graphqlQuery2,
+  //         variables,
+  //       })
+  //       .then(response => {
+  //         console.log(response.data);
+  //       })
+  //       .catch(error => {
+  //         console.error('Erro ao chamar a API GraphQL:', error);
+  //       });
+  //   }, []);
+
   const handleCopyClick = () => {
     const inputElement = document.getElementById('outlined-adornment-password') as HTMLInputElement;
 
@@ -44,6 +93,7 @@ const EmailInput = () => {
           id="outlined-adornment-password"
           sx={{ mt: 1 }}
           size="small"
+          value={email.email}
           fullWidth
           readOnly
           endAdornment={
