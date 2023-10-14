@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store';
 import { Provider } from 'react-redux';
-import Inbox from './components/inbox/Inbox';
+import Inbox from './components/inbox';
 import { theme } from './assets/theme';
 
 function App() {

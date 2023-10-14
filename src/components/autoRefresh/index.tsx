@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { searchInbox, useEmailState } from '../../store/email';
 
 function AutoRefresh() {
   const [progress, setProgress] = useState(100);
   const [timeRemaining, setTimeRemaining] = useState(15);
+  const email = useAppSelector(useEmailState);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -18,7 +22,8 @@ function AutoRefresh() {
       setProgress(100);
       setTimeRemaining(15);
 
-      console.log('Timer chegou ao fim!');
+      // Busca emails recebidos
+      dispatch(searchInbox(email.id));
     }
 
     return () => {

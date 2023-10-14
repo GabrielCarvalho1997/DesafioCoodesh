@@ -88,7 +88,7 @@ export const searchInbox = createAsyncThunk("email/searchInbox", async (id: stri
         );
        return response.data;
     } catch (error) {
-        console.error("Erro ao chamar a API GraphQL:", error);
+        console.error("Erro ao chamar a API:", error);
     }
 });
 

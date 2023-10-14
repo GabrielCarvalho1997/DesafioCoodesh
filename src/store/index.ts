@@ -12,6 +12,7 @@ const emailPersistConfig = {
 
 const rootReducer = combineReducers({
     email: persistReducer(emailPersistConfig, emailReducer),
+    inbox: emailReducer,
 })
 
 

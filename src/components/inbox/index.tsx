@@ -17,64 +17,36 @@ type InboxProps = {
 const Inbox = () => {
   const email = useAppSelector(useEmailState);
   const dispatch = useAppDispatch();
-  const [inbox, setInbox] = useState<InboxProps>({
-    mails: [
-      {
-        toAddr: 'yckuxdhdd@zeroe.ml',
-        text: ' chama BB \r\n',
-        rawSize: 6836,
-        headerSubject:
-          'nois aqui denovoaaaaaaaaaaaaaaaaaaa asd awe a     asdasd            gadsadasdaaaaaaaaa asssssssss',
-        fromAddr: 'gabrielcoelhoneves@hotmail.com',
-        downloadUrl:
-          'https://dropmail.me/download/mail/gql:anonym-MY_TOKEN:850ba62f-b30c-406b-8e0b-6b7fb18e0021/202310138dsky7efzen3m3dqhj39kpgqh9dv05yx',
-      },
-      {
-        toAddr: 'yckuxdhdd@zeroe.ml',
-        text: 'aopppaa\r\n',
-        rawSize: 6820,
-        headerSubject: 'fala comigo',
-        fromAddr: 'gabrielcoelhoneves@hotmail.com',
-        downloadUrl:
-          'https://dropmail.me/download/mail/gql:anonym-MY_TOKEN:850ba62f-b30c-406b-8e0b-6b7fb18e0021/20231013pnp3a90ztpy2paf6m7ga2m4888vhbr88',
-      },
-      {
-        toAddr: 'yckuxdhdd@zeroe.ml',
-        text: 'testando\r\n',
-        rawSize: 6810,
-        headerSubject: 'teste',
-        fromAddr: 'gabrielcoelhoneves@hotmail.com',
-        downloadUrl:
-          'https://dropmail.me/download/mail/gql:anonym-MY_TOKEN:850ba62f-b30c-406b-8e0b-6b7fb18e0021/20231013pz19ex3w26w5tg5vn4e678ymgkgra9xq',
-      },
-    ],
-  });
+  const [inbox, setInbox] = useState<InboxProps>();
   const [activeMessage, setActiveMessage] = useState<any>(null);
 
-  // useEffect(() => {
-  //   // Busca emails recebidos
-  //   dispatch(searchInbox(email.id))
-  //     .then(res => {
-  //       if (res.payload) {
-  //         setInbox({ mails: res.payload.data.session.mails });
-  //         console.log(res.payload.data.session.mails);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error(error);
-  //     });
-  // }, [dispatch, email.id, setInbox]);
+  useEffect(() => {
+    // Busca emails recebidos
+    if (email.id)
+      dispatch(searchInbox(email.id))
+        .then(res => {
+          if (res.payload) {
+            setInbox({ mails: res.payload.data.session.mails });
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+  }, [dispatch, email.id, setInbox]);
 
   return (
     <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-      <Grid item fontSize={20} fontWeight={'bold'} xs={3} sx={{ border: '1px solid #ccc' }}>
-        Inbox
+      <Grid item xs={3} sx={{ border: '1px solid #ccc' }}>
+        <Typography fontSize={25} fontWeight={'bold'}>
+          Inbox
+        </Typography>
+        <Typography fontSize={12}>Selecione um email para visualizar</Typography>
       </Grid>
       <Grid item xs={9} sx={{ border: '1px solid #ccc', backgroundColor: '#e7e7e7' }}></Grid>
       <Grid item xs={3} sx={{ border: '1px solid #ccc' }}>
         {inbox &&
           inbox.mails.map((item: any, i) => (
-            <>
+            <Box key={i}>
               <Box
                 key={i}
                 onClick={() => setActiveMessage(item)}
@@ -86,6 +58,7 @@ const Inbox = () => {
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     maxWidth: '80%',
+                    fontSize: 14,
                     fontWeight: 'bold',
                   }}
                 >
@@ -98,19 +71,26 @@ const Inbox = () => {
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
                     maxWidth: '80%',
+                    fontSize: 12,
                     fontWeight: 'bold',
                   }}
                 >
                   {item.fromAddr}
                 </Typography>
                 <Typography
-                  sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '80%' }}
+                  sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '80%',
+                    fontSize: 12,
+                  }}
                 >
                   {item.text}
                 </Typography>
               </Box>
               <Divider sx={{ my: 1 }} />
-            </>
+            </Box>
           ))}
       </Grid>
       <Grid item xs={9} sx={{ border: '1px solid #ccc', backgroundColor: '#e7e7e7' }}>
