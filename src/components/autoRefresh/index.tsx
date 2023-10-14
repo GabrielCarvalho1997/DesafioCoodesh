@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { searchInbox, useEmailState } from '../../store/email';
+import { useEmailState } from '../../store/email';
+import { searchInbox } from '../../store/inbox';
 
 function AutoRefresh() {
   const [progress, setProgress] = useState(100);
@@ -58,7 +59,7 @@ function AutoRefresh() {
           </Typography>
         </Box>
       </Box>
-      <Button size="small">
+      <Button size="small" onClick={() => dispatch(searchInbox(email.id))}>
         <RefreshIcon />
         Refresh
       </Button>

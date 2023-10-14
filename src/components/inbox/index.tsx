@@ -1,38 +1,22 @@
 import { Box, Grid, Typography, Divider } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../store';
-import { searchInbox, useEmailState } from '../../store/email';
+import { useEmailState } from '../../store/email';
 import { useEffect, useState } from 'react';
-
-type InboxProps = {
-  mails: Array<{
-    toAddr: string;
-    text: string;
-    rawSize: number;
-    headerSubject: string;
-    fromAddr: string;
-    downloadUrl: string;
-  }>;
-};
+import { searchInbox, useInboxState } from '../../store/inbox';
 
 const Inbox = () => {
   const email = useAppSelector(useEmailState);
+  const inbox = useAppSelector(useInboxState);
   const dispatch = useAppDispatch();
-  const [inbox, setInbox] = useState<InboxProps>();
   const [activeMessage, setActiveMessage] = useState<any>(null);
 
   useEffect(() => {
     // Busca emails recebidos
     if (email.id)
-      dispatch(searchInbox(email.id))
-        .then(res => {
-          if (res.payload) {
-            setInbox({ mails: res.payload.data.session.mails });
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-  }, [dispatch, email.id, setInbox]);
+      dispatch(searchInbox(email.id)).catch(error => {
+        console.error(error);
+      });
+  }, [dispatch, email.id]);
 
   return (
     <Grid container spacing={2} sx={{ flexGrow: 1 }}>

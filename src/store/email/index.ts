@@ -58,36 +58,6 @@ export const fetchEmail = createAsyncThunk("email/fetchEmail", async (_, { dispa
         );
         dispatch(emailActions.setEmail(response.data.data.introduceSession));
     } catch (error) {
-        console.error("Erro ao chamar a API GraphQL:", error);
-    }
-});
-
-export const searchInbox = createAsyncThunk("email/searchInbox", async (id: string) => {
-    const corsAnywhereUrl = 'https://cors-anywhere.herokuapp.com'; // URL do CORS Anywhere
-
-    const apiUrl = 'https://dropmail.me/api/graphql/MY_TOKEN';
-
-    const query = `
-    query ($id: ID!) {
-      session(id:$id) {
-        mails {
-          rawSize
-          fromAddr
-          toAddr
-          downloadUrl
-          text
-          headerSubject
-        }
-      }
-    }`;
-
-    try {
-        const response = await axios.post(
-            `${corsAnywhereUrl}/${apiUrl}`,
-            { query, variables: { id } },
-        );
-       return response.data;
-    } catch (error) {
         console.error("Erro ao chamar a API:", error);
     }
 });

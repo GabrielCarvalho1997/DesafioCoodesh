@@ -3,6 +3,7 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {persistReducer, persistStore} from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import emailReducer from "./email";
+import inboxReducer from "./inbox";
 
 
 const emailPersistConfig = {
@@ -12,7 +13,7 @@ const emailPersistConfig = {
 
 const rootReducer = combineReducers({
     email: persistReducer(emailPersistConfig, emailReducer),
-    inbox: emailReducer,
+    inbox: inboxReducer,
 })
 
 
