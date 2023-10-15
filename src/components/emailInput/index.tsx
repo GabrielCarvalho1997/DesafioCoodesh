@@ -1,37 +1,52 @@
-import { Box, Button, FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchEmail, useEmailState } from '../../store/email';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import AutoRefresh from '../autoRefresh';
+import { inboxActions, inboxSlice } from '../../store/inbox';
 
 const EmailInput = () => {
   const email = useAppSelector(useEmailState);
   const dispatch = useAppDispatch();
+  const [showButton, setShowButton] = useState(!localStorage.getItem('persist:email'));
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verifique se a última busca foi feita há mais de 10 minutos
-    const lastFetchTime = localStorage.getItem('lastFetchTime');
+    const lastFetchTime = localStorage.getItem('persist:email');
     const currentTime = new Date().getTime();
 
     if (!lastFetchTime || currentTime - Number(lastFetchTime) > 10 * 60 * 1000) {
-      // Se passaram mais de 10 minutos ou se nenhum lastFetchTime estiver definido, chame fetchEmail
-      dispatch(fetchEmail());
-      // Atualize o lastFetchTime no localStorage
-      localStorage.setItem('lastFetchTime', String(currentTime));
+      setShowButton(true);
     }
-    // Defina um intervalo para verificar e chamar fetchEmail a cada 10 minutos
-    const fetchEmailInterval = setInterval(() => {
-      dispatch(fetchEmail());
-      // Atualize o lastFetchTime no localStorage
-      localStorage.setItem('lastFetchTime', String(new Date().getTime()));
-    }, 10 * 60 * 1000); // 10 minutos
+  }, []);
 
-    // Limpe o intervalo quando o componente for desmontado
-    return () => {
-      clearInterval(fetchEmailInterval);
-    };
-  }, [dispatch]);
+  const generateEmail = () => {
+    setLoading(true);
+    dispatch(fetchEmail()).finally(() => {
+      setLoading(false);
+    });
+
+    // Defina um timeout de 10 minutos para limpar o localStorage
+    setTimeout(() => {
+      localStorage.removeItem('persist:email');
+      dispatch(inboxActions.setInbox(inboxSlice.getInitialState()));
+      setShowButton(true);
+      toast.warning('Email expirado! Clique no botão para gerar um novo.');
+    }, 10 * 60 * 1000);
+
+    setShowButton(false);
+  };
 
   const handleCopyClick = () => {
     const inputElement = document.getElementById('outlined-adornment-password') as HTMLInputElement;
@@ -54,37 +69,53 @@ const EmailInput = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        pt: 2,
-      }}
-    >
-      <FormControl variant="outlined" sx={{ width: '50%' }}>
-        <InputLabel htmlFor="outlined-adornment-password" shrink sx={{ fontWeight: 'bold' }}>
-          Your temporary email address
-        </InputLabel>
-        <OutlinedInput
-          id="outlined-adornment-password"
-          sx={{ mt: 1 }}
-          size="small"
-          value={email.addresses[0].address}
-          fullWidth
-          readOnly
-          endAdornment={
-            <InputAdornment position="end">
-              <Button onClick={handleCopyClick}>
-                <ContentCopyIcon />
-                Copy
-              </Button>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-    </Box>
+    <>
+      {loading && (
+        <Backdrop open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      )}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {showButton ? (
+          <Button variant="contained" onClick={generateEmail}>
+            Gerar Email
+          </Button>
+        ) : (
+          <>
+            <FormControl variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password" shrink sx={{ fontWeight: 'bold' }}>
+                Seu endereço de email temporário
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                sx={{ mt: 1 }}
+                size="medium"
+                value={email.addresses[0].address}
+                fullWidth
+                readOnly
+                endAdornment={
+                  <InputAdornment position="end">
+                    <Button onClick={handleCopyClick}>
+                      <ContentCopyIcon />
+                      Copiar
+                    </Button>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+            {/* Atualização automática dos emails recebidos */}
+            <AutoRefresh />
+          </>
+        )}
+      </Box>
+    </>
   );
 };
 

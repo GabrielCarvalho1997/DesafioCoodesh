@@ -25,7 +25,7 @@ const ButtonNotification = () => {
     });
 
     // Comparar o array de mails atual com o anterior
-    if (inbox.mails.length > 0 && JSON.stringify(inbox.mails) !== JSON.stringify(previousMails.current)) {
+    if (inbox.mails.length > 1 && JSON.stringify(inbox.mails) !== JSON.stringify(previousMails.current)) {
       // Verificar se a guia está atualmente focada
       if (!isTabFocused.current) {
         const notification = new Notification('Novo email recebido', {
@@ -48,7 +48,7 @@ const ButtonNotification = () => {
   }, [inbox.mails]);
 
   return (
-    <Button variant="outlined" color="primary" sx={{ mb: 5 }} onClick={handleNotifications}>
+    <Button variant="contained" color="primary" sx={{ mb: 5, alignSelf: 'start' }} onClick={handleNotifications}>
       Receber notificações
     </Button>
   );
