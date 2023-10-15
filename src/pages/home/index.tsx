@@ -9,11 +9,7 @@ const Home = () => {
       {/* Botão de notificação */}
       <ButtonNotification />
       <Grid container spacing={2}>
-        <Grid
-          item
-          xs={12}
-          sx={{ border: '1px solid #ccc', pb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-        >
+        <Grid item xs={12} sx={{ border: '1px solid #ccc', pb: 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {/* Input onde o email é gerado */}
           <EmailInput />
         </Grid>

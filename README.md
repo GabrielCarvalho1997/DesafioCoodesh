@@ -1,27 +1,71 @@
-# React + TypeScript + Vite
+## Coodesh DropMail.me Challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Projeto
 
-Currently, two official plugins are available:
+- Documentação
+- Funcionalidades
+- Requesitos Mínimos
+- Tecnologias Utilizadas
+- Como rodar o projeto localmente
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Documentação
 
-## Expanding the ESLint configuration
+- Documentação do [DropMail](https://dropmail.me/api/#)
+- Documentação do CorsAnywhere está em [CorsAnywhere](https://github.com/Rob--W/cors-anywhere)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Funcionalidades
 
-- Configure the top-level `parserOptions` property like this:
+Desenvolver uma aplicação que consome a API do DropMail para gerar um email temporário sem a necessidade do usuário expor seu email real a possíveis
+fraudes e spans.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+## Requisitos orbigatórios
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- Obrigatório 1 - Você deverá atender aos seguintes casos de uso:
+
+  - Como usuário, posso gerar um endereço de email temporário;
+  - Como usuário, posso copiar o endereço de email gerado;
+  - Como usuário, posso visualizar acaixa de entrada deste email;
+
+- Obrigatório 2 - Para capturar a chegada de novos emails, você deve verificar a caixa de mensagens a cada 15 segundos.
+
+- Obrigatório 3 - Adicione um novo botão chamado "Receber notificações". Este botão irá ativar a notificações na área de trabalho quando chegar um
+  novo email, caso a tab não esteja em foco. Caso o usuário não aceite, o botão deve permitir que, se clicado, abra novamente a mensagem para liberar
+  este recurso do navegador.
+
+- Obrigatório 4 - Seguir a base do mockup (estilização ao seu critério)
+
+- Obrigatório 5 - Salve os dados de acesso ao email no localstorage ou sessionstorage, para que a conta não seja perdida ao atualizar a página. Caso o
+  email tenha expirado, é necessário remover esse registro do storage.
+
+## Tecnologias
+
+- React
+- Typescript
+- Git/Github
+- VsCode
+- Material UI
+- Redux
+- Redux Persist
+- React Router DOM
+- AXIOS
+
+## Inicializando o projeto local
+
+Passo a passo:
+
+- Clone o projeto
+- Instale as dependências com `npm install`
+- Peça permissão ao [CorsAnywhere](https://cors-anywhere.herokuapp.com/)
+- Rode o projeto com `npm run dev`
+
+## Projeto na Netlify
+
+[Netlify](https://)
+
+<br>
+
+<h3>
+  <a href='#top'>Início</a>
+</h3>
+
+<br>

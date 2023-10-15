@@ -44,11 +44,7 @@ const Inbox = () => {
           {inbox &&
             inbox.mails.map((item: any, i) => (
               <Box key={i}>
-                <Box
-                  key={i}
-                  onClick={() => setActiveMessage(item)}
-                  sx={{ cursor: 'pointer', backgroundColor: '#e7e7e7', mr: 2, p: 1 }}
-                >
+                <Box key={i} onClick={() => setActiveMessage(item)} sx={{ cursor: 'pointer', backgroundColor: '#e7e7e7', mr: 2, p: 1 }}>
                   <Typography
                     sx={{
                       overflow: 'hidden',
@@ -96,9 +92,7 @@ const Inbox = () => {
               <Typography fontSize={30} fontWeight={'bold'}>
                 {activeMessage.headerSubject}
               </Typography>
-              <Typography sx={{ flexGrow: 1, backgroundColor: '#fff', mr: 2, mb: 2, p: 1 }}>
-                {activeMessage.text}
-              </Typography>
+              <Typography sx={{ flexGrow: 1, backgroundColor: '#fff', mr: 2, mb: 2, p: 1 }}>{activeMessage.text}</Typography>
             </Box>
           )}
         </Grid>
