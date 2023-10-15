@@ -64,7 +64,7 @@ Passo a passo:
 
 ## Projeto na Netlify
 
-[Vídeo de apresentação](https://www.loom.com/share/7715cb19666448ff924ace94d97b4379)
+[Vídeo de apresentação](https://www.loom.com/share/43f98b67af9b49a19e617b4e9cb99029)
 
 <br>
 
