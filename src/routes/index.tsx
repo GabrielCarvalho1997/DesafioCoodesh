@@ -4,8 +4,8 @@ import Home from '../pages/home';
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/home" element={<Home />} />
-      <Route path="*" element={<Navigate to="/home" />} />
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 };
