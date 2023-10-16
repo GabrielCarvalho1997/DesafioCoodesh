@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, CircularProgress, Typography, Button, Backdrop } from '@mui/material';
+import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { useEmailState } from '../../store/email';
@@ -10,7 +10,6 @@ function AutoRefresh() {
   const [timeRemaining, setTimeRemaining] = useState(15);
   const email = useAppSelector(useEmailState);
   const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,10 +24,7 @@ function AutoRefresh() {
       setTimeRemaining(15);
 
       // Busca emails recebidos
-      setLoading(true);
-      dispatch(searchInbox(email.id)).finally(() => {
-        setLoading(false);
-      });
+      dispatch(searchInbox(email.id));
     }
 
     return () => {
@@ -37,44 +33,37 @@ function AutoRefresh() {
   }, [timeRemaining]);
 
   return (
-    <>
-      {loading && (
-        <Backdrop open={loading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      )}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', my: 2, gap: 1 }}>
-        <Typography fontSize={12}>Autorefresh in</Typography>
+    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', my: 2, gap: 1 }}>
+      <Typography fontSize={12}>Autorefresh in</Typography>
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'inline-flex',
+        }}
+      >
+        <CircularProgress variant="determinate" value={progress} size={30} />
         <Box
           sx={{
-            position: 'relative',
-            display: 'inline-flex',
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <CircularProgress variant="determinate" value={progress} size={30} />
-          <Box
-            sx={{
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              position: 'absolute',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Typography variant="caption" component="div" color="text.secondary">
-              {`${timeRemaining}s`}
-            </Typography>
-          </Box>
+          <Typography variant="caption" component="div" color="text.secondary">
+            {`${timeRemaining}s`}
+          </Typography>
         </Box>
-        <Button size="small" onClick={() => dispatch(searchInbox(email.id))}>
-          <RefreshIcon />
-          Refresh
-        </Button>
       </Box>
-    </>
+      <Button size="small" onClick={() => dispatch(searchInbox(email.id))}>
+        <RefreshIcon />
+        Refresh
+      </Button>
+    </Box>
   );
 }
 
